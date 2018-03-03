@@ -1,0 +1,21 @@
+{
+  "name": "vault-web3-provider",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "webpack; cd dist; python -m SimpleHTTPServer"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethereum-tx-decoder": "^1.0.2",
+    "vault-api": "file:../vault-api",
+    "web3-provider-engine": "^13.6.5",
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.10"
+  },
+  "devDependencies": {
+    "web3": "^1.0.0-beta.30"
+  }
+}
