@@ -21,12 +21,21 @@ vault.init(opts).then((result) => {
     web3.eth.getAccounts().then((accounts) => {
       console.log('accounts:')
       console.log(accounts)
-      web3.eth.signTransaction({from: accounts[0],
-        gasPrice: "20000000000",
+      web3.eth.sendTransaction({from: accounts[0],
+        gasPrice: "2000000000",
         gas: "21000",
-        to: '0x3535353535353535353535353535353535353535',
+        to: '0x21ef24ffb2116f44e7918a80cea4f52a2ea72b17',
         value: "1",
-        data: ""}).then(console.log)
+        data: ""}).on('transactionHash', function(hash){
+          console.log('transaction ' + hash)
+        })
+        .on('receipt', function(receipt){
+          console.log('receipt ' + receipt)
+        })
+        .on('confirmation', function(confirmationNumber, receipt) {
+          console.log('confirmation ' + i + " " + receipt)
+        })
+        .on('error', console.error)
     })
   })
   
