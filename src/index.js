@@ -1,6 +1,8 @@
 var ProviderEngine = require('web3-provider-engine')
 var HookedWalletSubprovider = require('web3-provider-engine/subproviders/hooked-wallet.js')
-var Web3Subprovider = require("web3-provider-engine/subproviders/web3.js");
+var Web3Subprovider = require("web3-provider-engine/subproviders/web3.js")
+var FiltersSubprovider = require('web3-provider-engine/subproviders/filters.js')
+var SubscriptionsSubprovider = require('web3-provider-engine/subproviders/subscriptions.js')
 var ethutil = require('ethereumjs-util')
 var Transaction = require('ethereumjs-tx')
 var vault = null
@@ -127,6 +129,8 @@ exports.init = function(vaultModule, vaultSecp256k1Module, givenProvider) {
 
   var engine = new ProviderEngine()
   engine.addProvider(new ZipperProvider())
+  engine.addProvider(new FiltersSubprovider())
+  engine.addProvider(new SubscriptionsSubprovider())
   engine.addProvider(new Web3Subprovider(givenProvider))
   engine.start()
   return engine
