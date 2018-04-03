@@ -12,9 +12,7 @@ if (location.hash.startsWith('#zipper-vault=')) {
 vault.init(opts).then((result) => {
   console.log('got inited:')
   console.log(result)
-  var underlying = new Web3.providers.HttpProvider('https://contribution.zipperglobal.com/eth')
-  underlying.sendAsync = underlying.send
-  var provider = zipperprovider.init(vault, vaultSecp256k1, underlying)
+  var provider = zipperprovider.init(vault, vaultSecp256k1)
   zipperprovider.addAccount('m/0').then((addy) => {
     console.log(addy)
     var web3 = new Web3(provider)
@@ -26,14 +24,14 @@ vault.init(opts).then((result) => {
         gas: "21000",
         to: '0x21ef24ffb2116f44e7918a80cea4f52a2ea72b17',
         value: "1",
-        data: ""}).on('transactionHash', function(hash){
+        data: ""}).once('transactionHash', function(hash){
           console.log('transaction ' + hash)
         })
-        .on('receipt', function(receipt){
+        .once('receipt', function(receipt){
           console.log('receipt ' + receipt)
         })
         .on('confirmation', function(confirmationNumber, receipt) {
-          console.log('confirmation ' + i + " " + receipt)
+          console.log('confirmation ' + confirmationNumber + " " + receipt)
         })
         .on('error', console.error)
     })

@@ -1,13 +1,92 @@
-var ProviderEngine = require('web3-provider-engine')
-var HookedWalletSubprovider = require('web3-provider-engine/subproviders/hooked-wallet.js')
-var Web3Subprovider = require("web3-provider-engine/subproviders/web3.js")
-var FiltersSubprovider = require('web3-provider-engine/subproviders/filters.js')
-var SubscriptionsSubprovider = require('web3-provider-engine/subproviders/subscriptions.js')
 var ethutil = require('ethereumjs-util')
 var Transaction = require('ethereumjs-tx')
 var vault = null
 var vaultSecp256k1 = null
 var accounts = []
+
+const HttpProvider = require('ethjs-provider-http')
+const ProviderEngine = require('web3-provider-engine/index.js')
+
+const DefaultFixture = require('web3-provider-engine/subproviders/default-fixture.js')
+const NonceTrackerSubprovider = require('web3-provider-engine/subproviders/nonce-tracker.js')
+const CacheSubprovider = require('web3-provider-engine/subproviders/cache.js')
+const FilterSubprovider = require('web3-provider-engine/subproviders/filters.js')
+const InflightCacheSubprovider = require('web3-provider-engine/subproviders/inflight-cache')
+const HookedWalletSubprovider = require('web3-provider-engine/subproviders/hooked-wallet.js')
+const SanitizingSubprovider = require('web3-provider-engine/subproviders/sanitizer.js')
+const RpcSubprovider = require('web3-provider-engine/subproviders/rpc.js')
+const FetchSubprovider = require('web3-provider-engine/subproviders/fetch.js')
+const SubscriptionsSubprovider = require('web3-provider-engine/subproviders/subscriptions.js')
+
+function ZeroClientProvider(opts){
+  opts = opts || {}
+
+  const engine = new ProviderEngine(opts.engineParams)
+
+  // static
+  const staticSubprovider = new DefaultFixture(opts.static)
+  engine.addProvider(staticSubprovider)
+ 
+  // nonce tracker
+  engine.addProvider(new NonceTrackerSubprovider())
+
+  // sanitization
+  const sanitizer = new SanitizingSubprovider()
+  engine.addProvider(sanitizer)
+
+  // cache layer
+  const cacheSubprovider = new CacheSubprovider()
+  engine.addProvider(cacheSubprovider)
+
+  // filters
+  const filterSubprovider = new FilterSubprovider()
+  engine.addProvider(filterSubprovider)
+
+  // inflight cache
+  const inflightCache = new InflightCacheSubprovider()
+  engine.addProvider(inflightCache)
+  const subscriptions = new SubscriptionsSubprovider()
+  engine.addProvider(subscriptions)
+  
+  // id mgmt
+  const idmgmtSubprovider = new HookedWalletSubprovider({
+    // accounts
+    getAccounts: opts.getAccounts,
+    // transactions
+    processTransaction: opts.processTransaction,
+    approveTransaction: opts.approveTransaction,
+    signTransaction: opts.signTransaction,
+    publishTransaction: opts.publishTransaction,
+    // messages
+    // old eth_sign
+    processMessage: opts.processMessage,
+    approveMessage: opts.approveMessage,
+    signMessage: opts.signMessage,
+    // new personal_sign
+    processPersonalMessage: opts.processPersonalMessage,
+    processTypedMessage: opts.processTypedMessage,
+    approvePersonalMessage: opts.approvePersonalMessage,
+    approveTypedMessage: opts.approveTypedMessage,
+    signPersonalMessage: opts.signPersonalMessage,
+    signTypedMessage: opts.signTypedMessage,
+    personalRecoverSigner: opts.personalRecoverSigner,
+  })
+  engine.addProvider(idmgmtSubprovider)
+
+  // data source
+  const dataSubprovider = opts.dataSubprovider || new FetchSubprovider({
+    rpcUrl: opts.rpcUrl || 'https://mainnet.infura.io/',
+    originHttpHeaderKey: opts.originHttpHeaderKey,
+  })
+  engine.addProvider(dataSubprovider)
+
+  // start polling
+  engine.start()
+
+  return engine
+
+}
+
 
 function normalize(hex) {
   if (hex == null) {
@@ -81,9 +160,12 @@ exports.addAccount = function(derive) {
      })
 }
 
-class ZipperProvider extends HookedWalletSubprovider {
-  constructor() {
-    super({
+exports.init = function(vaultModule, vaultSecp256k1Module) {
+  vault = vaultModule
+  vaultSecp256k1 = vaultSecp256k1Module
+
+  var zero = ZeroClientProvider({
+      rpcUrl: 'https://contribution.zipperglobal.com/eth',
       getAccounts: function(cb) {
         let tempAccountsList = []
         for (var i = 0; i < accounts.length; i++) {
@@ -118,20 +200,7 @@ class ZipperProvider extends HookedWalletSubprovider {
           return
         })
         return
-      }
-    })
-  }
-}
-
-exports.init = function(vaultModule, vaultSecp256k1Module, givenProvider) {
-  vault = vaultModule
-  vaultSecp256k1 = vaultSecp256k1Module
-
-  var engine = new ProviderEngine()
-  engine.addProvider(new ZipperProvider())
-  engine.addProvider(new FiltersSubprovider())
-  engine.addProvider(new SubscriptionsSubprovider())
-  engine.addProvider(new Web3Subprovider(givenProvider))
-  engine.start()
-  return engine
+      }  
+  })
+  return zero
 }
