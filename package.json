@@ -9,9 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ethjs-provider-http": "^0.1.6",
-    "web3-provider-engine": "github:zippiehq/provider-engine",
-    "webpack": "^4.0.1"
+    "web3-provider-engine": "github:zippiehq/provider-engine#ethblocktracker_subscriptions",
+    "webpack": "^4.0.1",
+    "wscat": "^2.1.1"
   },
   "devDependencies": {
     "uglifyjs-webpack-plugin": "^1.2.4",
