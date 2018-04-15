@@ -12,7 +12,7 @@ if (location.hash.startsWith('#zipper-vault=')) {
 vault.init(opts).then((result) => {
   console.log('got inited:')
   console.log(result)
-  var provider = zipperprovider.init(vault, vaultSecp256k1)
+  var provider = zipperprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
   zipperprovider.addAccount('m/0').then((addy) => {
     console.log(addy)
     var web3 = new Web3(provider)

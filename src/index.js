@@ -79,12 +79,12 @@ exports.addAccount = function(derive) {
      })
 }
 
-exports.init = function(vaultModule, vaultSecp256k1Module) {
+exports.init = function(vaultModule, vaultSecp256k1Module, options = { network: 'foundation' }) {
   vault = vaultModule
   vaultSecp256k1 = vaultSecp256k1Module
 
   var zero = ZeroClientProvider({
-      rpcUrl: 'wss://query.zippie.org:8546/',
+      rpcUrl: 'wss://' + options.network + '.query.zippie.org/',
       getAccounts: function(cb) {
         let tempAccountsList = []
         for (var i = 0; i < accounts.length; i++) {
