@@ -6,8 +6,8 @@ var Web3 = require('web3');
 
 opts = {}
 
-if (location.hash.startsWith('#zipper-vault=')) {
-   opts = { 'vaultURL' : location.hash.slice('#zipper-vault='.length) }
+if (location.hash.startsWith('#zippie-vault=')) {
+   opts = { 'vaultURL' : location.hash.slice('#zippie-vault='.length) }
 }
 vault.init(opts).then((result) => {
   console.log('got inited:')
