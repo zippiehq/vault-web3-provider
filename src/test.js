@@ -1,7 +1,7 @@
 
 var vault = require('vault-api')
 var vaultSecp256k1 = require('vault-api/src/secp256k1.js')
-var zipperprovider = require('./index.js')
+var zippieprovider = require('./index.js')
 var Web3 = require('web3');
 
 opts = {}
@@ -12,8 +12,8 @@ if (location.hash.startsWith('#zippie-vault=')) {
 vault.init(opts).then((result) => {
   console.log('got inited:')
   console.log(result)
-  var provider = zipperprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
-  zipperprovider.addAccount('m/0').then((addy) => {
+  var provider = zippieprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
+  zippieprovider.addAccount('m/0').then((addy) => {
     console.log(addy)
     var web3 = new Web3(provider)
     web3.eth.getAccounts().then((accounts) => {
