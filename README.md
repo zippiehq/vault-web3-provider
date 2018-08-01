@@ -13,6 +13,12 @@ Requests are signed locally using Vault Derived Keys and sent to query.zippie.or
 npm install
 ```
 
+## Run Tests
+```bash
+npm run build-test
+npm run test
+```
+
 ## Example
 ```javascript
 const vault = require('vault-api')
@@ -20,19 +26,21 @@ const vaultSecp256k1 = require('vault-api/src/secp256k1.js')
 const zippieprovider = require('vault-web3-provider')
 const Web3 = require('web3')
 
+// TODO: Handle injected web3
+
 // Initialise the Vault
 vault.init().then((result) => {
   console.log('Initialised Vault: ' + result)
 
   // Set up the provider on the Kovan Test Network
-  var provider = zippieprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
+  var ethereum = zippieprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
 
   // Add an Account using the Zippie Key Path eg. 'm/0'
   zippieprovider.addAccount('m/0').then((address) => {
     console.log(address)
 
     // Create a new Web3 Instance
-    var web3 = new Web3(provider)
+    var web3 = new Web3(ethereum)
     web3.eth.getAccounts().then((accounts) => {
       console.log('accounts: ' + accounts)
  
