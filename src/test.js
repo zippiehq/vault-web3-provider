@@ -4,12 +4,7 @@ var vaultSecp256k1 = require('vault-api/src/secp256k1.js')
 var zippieprovider = require('./index.js')
 var Web3 = require('web3');
 
-opts = {}
-
-if (location.hash.startsWith('#zippie-vault=')) {
-   opts = { 'vaultURL' : location.hash.slice('#zippie-vault='.length) }
-}
-vault.init(opts).then((result) => {
+vault.init().then((result) => {
   console.log('got inited:')
   console.log(result)
   var provider = zippieprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
