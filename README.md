@@ -10,7 +10,7 @@ Requests are signed locally using Vault Derived Keys and sent to query.zippie.or
 
 ## Building
 ```bash
-npm install
+npm install vault-web3-provider
 ```
 
 ## Run Tests
@@ -44,7 +44,7 @@ vault
 ```
 
 ### Initialise Web3 Provider
-on the ethereum network of your choice .eg kovan, ropsten, maimnet
+on the ethereum network of your choice .eg kovan, ropsten, mainnet
 ```javascript
 var ethereum = zippieprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
 ```
@@ -73,7 +73,9 @@ web3.eth.getAccounts()
   }
 );
 ```
+After that you now have a working [web3.js](https://github.com/ethereum/web3.js/) object and can use the standard API.
 
 ## Contributing
 
 ## License
+[BSD-3-Clause](LICENSE)
