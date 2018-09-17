@@ -1,14 +1,14 @@
 {
   "name": "vault-web3-provider",
   "version": "1.0.0",
-  "description": "",
+  "description": "Web3.js provider using Zippie Vault",
   "main": "src/index.js",
   "scripts": {
     "build-test": "webpack;openssl req -x509 -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days 365 -subj \"/C=US/ST=./L=./O=./CN=.\"",
     "test": "webpack; cd dist; http-server -p 8443 -S -K ../key.pem -C ../cert.pem -o"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Zippie Ltd.",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "web3-provider-engine": "github:zippiehq/provider-engine#ethblocktracker_subscriptions",
     "webpack": "^4.0.1",
