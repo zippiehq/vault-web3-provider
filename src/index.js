@@ -5,7 +5,93 @@ var vaultSecp256k1 = null
 var accounts = []
 
 const ProviderEngine = require('web3-provider-engine/index.js')
-const ZeroClientProvider = require('web3-provider-engine/zero.js')
+const DefaultFixture = require('web3-provider-engine/subproviders/default-fixture.js')
+const NonceTrackerSubprovider = require('web3-provider-engine/subproviders/nonce-tracker.js')
+const CacheSubprovider = require('web3-provider-engine/subproviders/cache.js')
+const FilterSubprovider = require('web3-provider-engine/subproviders/filters.js')
+const SubscriptionSubprovider = require('web3-provider-engine/subproviders/subscriptions')
+const InflightCacheSubprovider = require('web3-provider-engine/subproviders/inflight-cache')
+const HookedWalletSubprovider = require('web3-provider-engine/subproviders/hooked-wallet.js')
+const SanitizingSubprovider = require('web3-provider-engine/subproviders/sanitizer.js')
+const WebSocketSubprovider = require('web3-provider-engine/subproviders/websocket.js')
+const EthBlockTracker = require('eth-block-tracker')
+
+function ZippieClientProvider(opts = {}){
+  let dataSubprovider = new WebSocketSubprovider({ rpcUrl: opts.rpcUrl, debug: true })
+  if (!('engineParams' in opts)) {
+    opts.engineParams = {}
+  }
+    
+  const directProvider = {}
+  opts.engineParams.blockTracker = new EthBlockTracker({ provider: directProvider, pollingInterval: 8000})
+  const engine = new ProviderEngine(opts.engineParams)
+  directProvider.sendAsync = engine._handleAsync.bind(engine)
+  directProvider.on = engine.on.bind(engine)
+
+  // static
+  const staticSubprovider = new DefaultFixture(opts.static)
+  engine.addProvider(staticSubprovider)
+
+  // nonce tracker
+  engine.addProvider(new NonceTrackerSubprovider())
+
+  // sanitization
+  const sanitizer = new SanitizingSubprovider()
+  engine.addProvider(sanitizer)
+
+  // cache layer
+  // const cacheSubprovider = new CacheSubprovider()
+  // engine.addProvider(cacheSubprovider)
+
+  // filters + subscriptions
+  // for websockets, only polyfill filters
+  const filterSubprovider = new FilterSubprovider()
+  engine.addProvider(filterSubprovider)
+
+  // inflight cache
+  const inflightCache = new InflightCacheSubprovider()
+  engine.addProvider(inflightCache)
+
+  // id mgmt
+  const idmgmtSubprovider = new HookedWalletSubprovider({
+    // accounts
+    getAccounts: opts.getAccounts,
+    // transactions
+    processTransaction: opts.processTransaction,
+    approveTransaction: opts.approveTransaction,
+    signTransaction: opts.signTransaction,
+    publishTransaction: opts.publishTransaction,
+    // messages
+    // old eth_sign
+    processMessage: opts.processMessage,
+    approveMessage: opts.approveMessage,
+    signMessage: opts.signMessage,
+    // new personal_sign
+    processPersonalMessage: opts.processPersonalMessage,
+    processTypedMessage: opts.processTypedMessage,
+    approvePersonalMessage: opts.approvePersonalMessage,
+    approveTypedMessage: opts.approveTypedMessage,
+    signPersonalMessage: opts.signPersonalMessage,
+    signTypedMessage: opts.signTypedMessage,
+    personalRecoverSigner: opts.personalRecoverSigner,
+  })
+  engine.addProvider(idmgmtSubprovider)
+
+  // for websockets, forward subscription events through provider
+  dataSubprovider.on('data', (err, notification) => {
+    engine.emit('data', err, notification)
+  })
+  engine.addProvider(dataSubprovider)
+
+  // start polling
+  if (!opts.stopped) {
+    engine.start()
+  }
+
+  return engine
+
+}
+
 
 function normalize(hex) {
   if (hex == null) {
@@ -83,7 +169,7 @@ exports.init = function(vaultModule, vaultSecp256k1Module, options = { network: 
   vault = vaultModule
   vaultSecp256k1 = vaultSecp256k1Module
 
-  var zero = ZeroClientProvider({
+  var zero = ZippieClientProvider({
       rpcUrl: 'wss://' + options.network + '.query.zippie.org/',
       getAccounts: function(cb) {
         let tempAccountsList = []

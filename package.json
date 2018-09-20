@@ -1,6 +1,6 @@
 {
-  "name": "vault-web3-provider",
-  "version": "1.0.0",
+  "name": "@zippie/vault-web3-provider",
+  "version": "0.0.1",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -10,15 +10,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "web3-provider-engine": "github:zippiehq/provider-engine#ethblocktracker_subscriptions",
+    "@zippie/eth-block-tracker": "^3.0.2",
+    "web3-provider-engine": "^14.0.6",
     "webpack": "^4.0.1",
-    "wscat": "^2.1.1"
   },
   "devDependencies": {
     "http-server": "^0.11.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "vault-api": "github:zippiehq/vault-api",
     "web3": "^1.0.0-beta.33",
-    "webpack-cli": "^2.0.13"
+    "webpack-cli": "^2.0.13",
+    "wscat": "^2.1.1"
   }
 }
