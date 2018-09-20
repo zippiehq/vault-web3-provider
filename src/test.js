@@ -1,6 +1,6 @@
 
-var vault = require('vault-api')
-var vaultSecp256k1 = require('vault-api/src/secp256k1.js')
+var vault = require('@zippie/vault-api')
+var vaultSecp256k1 = require('@zippie/vault-api/src/secp256k1.js')
 var zippieprovider = require('./index.js')
 var Web3 = require('web3');
 
