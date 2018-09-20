@@ -14,7 +14,7 @@ const InflightCacheSubprovider = require('web3-provider-engine/subproviders/infl
 const HookedWalletSubprovider = require('web3-provider-engine/subproviders/hooked-wallet.js')
 const SanitizingSubprovider = require('web3-provider-engine/subproviders/sanitizer.js')
 const WebSocketSubprovider = require('web3-provider-engine/subproviders/websocket.js')
-const EthBlockTracker = require('eth-block-tracker')
+const EthBlockTracker = require('@zippie/eth-block-tracker')
 
 function ZippieClientProvider(opts = {}){
   let dataSubprovider = new WebSocketSubprovider({ rpcUrl: opts.rpcUrl, debug: true })
