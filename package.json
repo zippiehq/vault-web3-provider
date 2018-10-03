@@ -1,6 +1,6 @@
 {
   "name": "@zippie/vault-web3-provider",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Web3.js provider using Zippie Vault",
   "main": "src/index.js",
   "scripts": {
