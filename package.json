@@ -1,6 +1,6 @@
 {
   "name": "@zippie/vault-web3-provider",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Web3.js provider using Zippie Vault",
   "main": "src/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@zippie/eth-block-tracker": "^3.0.2",
-    "web3-provider-engine": "^14.0.6",
+    "web3-provider-engine": "~14.0.6",
     "webpack": "^4.0.1"
   },
   "devDependencies": {
