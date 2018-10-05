@@ -1,6 +1,6 @@
 {
   "name": "@zippie/vault-web3-provider",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Web3.js provider using Zippie Vault",
   "main": "src/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "http-server": "^0.11.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "@zippie/vault-api": "^0.0.1",
-    "web3": "^1.0.0-beta.33",
+    "web3": "^1.0.0-beta.36",
     "webpack-cli": "^2.0.13",
     "wscat": "^2.1.1"
   }
