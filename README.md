@@ -8,14 +8,18 @@ Requests are signed locally using Vault Derived Keys and sent to query.zippie.or
  - [Web3.js](https://github.com/ethereum/web3.js/)
  - [Zippie Vault API](https://github.com/zippiehq/vault-api)
 
+## Install from npm repository
+```bash
+npm install @zippie/vault-web3-provider
+```
+
 ## Building
 ```bash
-npm install vault-web3-provider
+npm install
 ```
 
 ## Run Tests
 ```bash
-npm run build-test
 npm run test
 ```
 
@@ -74,8 +78,6 @@ web3.eth.getAccounts()
 );
 ```
 After that you now have a working [web3.js](https://github.com/ethereum/web3.js/) object and can use the standard API.
-
-## Contributing
 
 ## License
 [BSD-3-Clause](LICENSE)
