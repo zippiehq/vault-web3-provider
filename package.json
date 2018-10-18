@@ -1,25 +1,23 @@
 {
   "name": "@zippie/vault-web3-provider",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Web3.js provider using Zippie Vault",
   "main": "src/index.js",
   "scripts": {
-    "build-test": "webpack;openssl req -x509 -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days 365 -subj \"/C=US/ST=./L=./O=./CN=.\"",
-    "test": "webpack; cd dist; http-server -p 8443 -S -K ../key.pem -C ../cert.pem -o"
+    "test": "webpack-dev-server"
   },
   "author": "Zippie Ltd.",
   "license": "BSD-3-Clause",
   "dependencies": {
     "@zippie/eth-block-tracker": "^3.0.2",
-    "web3-provider-engine": "~14.0.6",
-    "webpack": "^4.0.1"
+    "web3-provider-engine": "~14.0.6"
   },
   "devDependencies": {
-    "http-server": "^0.11.1",
-    "uglifyjs-webpack-plugin": "^1.2.4",
     "@zippie/vault-api": "~0.0.5",
     "web3": "^1.0.0-beta.36",
-    "webpack-cli": "^2.0.13",
-    "wscat": "^2.1.1"
+    "webpack": "^4.0.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9",
+    "callbag-html": "^0.1.0"
   }
 }

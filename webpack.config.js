@@ -1,12 +1,21 @@
 const path = require('path');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const webpack = require('webpack')
 
 module.exports = {
   entry: './src/test.js',
   mode: 'development',
-/*   plugins: [
-    new UglifyJSPlugin()
-  ], */
+
+  devServer: {
+    https: true,
+    port: 8445,
+    contentBase: './dist',
+    hot: true
+  },
+
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ],
+
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
