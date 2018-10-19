@@ -27,9 +27,9 @@ npm run test
 
 ### Imports
 ```javascript
-import * as vault from 'vault-api'
-import * as vaultSecp256k1 from 'vault-api/src/secp256k1.js'
-import * as zippieprovider from 'vault-web3-provider'
+import * as vault from '@zippie/vault-api'
+import * as vaultSecp256k1 from '@zippie/vault-api/src/secp256k1.js'
+import * as zippieprovider from '@zippie/vault-web3-provider'
 import * as Web3 from 'web3'
 ```
 
