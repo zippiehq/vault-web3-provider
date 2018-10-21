@@ -1,20 +1,19 @@
-var ethutil = require('ethereumjs-util')
-var Transaction = require('ethereumjs-tx')
 var vault = null
 var vaultSecp256k1 = null
 var accounts = []
 
-const ProviderEngine = require('web3-provider-engine/index.js')
-const DefaultFixture = require('web3-provider-engine/subproviders/default-fixture.js')
-const NonceTrackerSubprovider = require('web3-provider-engine/subproviders/nonce-tracker.js')
-const CacheSubprovider = require('web3-provider-engine/subproviders/cache.js')
-const FilterSubprovider = require('web3-provider-engine/subproviders/filters.js')
-const SubscriptionSubprovider = require('web3-provider-engine/subproviders/subscriptions')
-const InflightCacheSubprovider = require('web3-provider-engine/subproviders/inflight-cache')
-const HookedWalletSubprovider = require('web3-provider-engine/subproviders/hooked-wallet.js')
-const SanitizingSubprovider = require('web3-provider-engine/subproviders/sanitizer.js')
-const WebSocketSubprovider = require('web3-provider-engine/subproviders/websocket.js')
-const EthBlockTracker = require('@zippie/eth-block-tracker')
+import * as ethutil from 'ethereumjs-util'
+import * as Transaction from 'ethereumjs-tx'
+import * as ProviderEngine from 'web3-provider-engine'
+import * as DefaultFixture from 'web3-provider-engine/subproviders/default-fixture'
+import * as NonceTrackerSubprovider from 'web3-provider-engine/subproviders/nonce-tracker'
+import * as CacheSubprovider from 'web3-provider-engine/subproviders/cache'
+import * as FilterSubprovider from 'web3-provider-engine/subproviders/filters'
+import * as InflightCacheSubprovider from 'web3-provider-engine/subproviders/inflight-cache'
+import * as HookedWalletSubprovider from 'web3-provider-engine/subproviders/hooked-wallet'
+import * as SanitizingSubprovider from 'web3-provider-engine/subproviders/sanitizer'
+import * as WebSocketSubprovider from 'web3-provider-engine/subproviders/websocket'
+import * as EthBlockTracker from '@zippie/eth-block-tracker'
 
 function ZippieClientProvider(opts = {}){
   let dataSubprovider = new WebSocketSubprovider({ rpcUrl: opts.rpcUrl, debug: true })
@@ -155,7 +154,7 @@ function ethAddress(derive) {
     })
 }
 
-exports.addAccount = function(derive) {
+export function addAccount(derive) {
    return new Promise(
      function (resolve, reject) { 
        ethAddress(derive).then((result) => {
@@ -165,7 +164,7 @@ exports.addAccount = function(derive) {
      })
 }
 
-exports.init = function(vaultModule, vaultSecp256k1Module, options = { network: 'foundation' }) {
+export function init(vaultModule, vaultSecp256k1Module, options = { network: 'foundation' }) {
   vault = vaultModule
   vaultSecp256k1 = vaultSecp256k1Module
 
