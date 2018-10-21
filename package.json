@@ -1,13 +1,17 @@
 {
   "name": "@zippie/vault-web3-provider",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Web3.js provider using Zippie Vault",
   "main": "src/index.js",
+  "author": "Zippie Ltd.",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/zippiehq/vault-web3-provider.git"
+  },    
   "scripts": {
     "test": "webpack-dev-server"
   },
-  "author": "Zippie Ltd.",
-  "license": "BSD-3-Clause",
   "dependencies": {
     "@zippie/eth-block-tracker": "^3.0.2",
     "web3-provider-engine": "~14.0.6"

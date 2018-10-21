@@ -1,8 +1,8 @@
 import { div, span, br } from 'callbag-html'
-var vault = require('@zippie/vault-api')
-var vaultSecp256k1 = require('@zippie/vault-api/src/secp256k1.js')
-var zippieprovider = require('./index.js')
-var Web3 = require('web3');
+import * as vault from '@zippie/vault-api'
+import * as vaultSecp256k1 from '@zippie/vault-api/src/secp256k1.js'
+import * as zippieprovider from './index.js'
+import * as Web3 from 'web3'
 
 var opts = {vaultURL: 'https://vault.dev.zippie.org'}
 
