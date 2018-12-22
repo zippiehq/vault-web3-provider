@@ -22,6 +22,11 @@ npm install
 ```bash
 npm run test
 ```
+## Web3 Support
+ - eth.sign()
+ - eth.getAccounts()
+ - eth.getBalance()
+ - eth.signTransaction()
 
 ## How to Use
 

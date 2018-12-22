@@ -6,9 +6,9 @@
   "author": "Zippie Ltd.",
   "license": "BSD-3-Clause",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/zippiehq/vault-web3-provider.git"
-  },    
+    "type": "git",
+    "url": "https://github.com/zippiehq/vault-web3-provider.git"
+  },
   "scripts": {
     "test": "webpack-dev-server"
   },
@@ -17,11 +17,11 @@
     "web3-provider-engine": "~14.0.6"
   },
   "devDependencies": {
-    "@zippie/vault-api": "~0.0.5",
+    "@zippie/vault-api": "0.0.11",
+    "callbag-html": "^0.1.0",
     "web3": "^1.0.0-beta.36",
     "webpack": "^4.0.1",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.9",
-    "callbag-html": "^0.1.0"
+    "webpack-dev-server": "^3.1.9"
   }
 }

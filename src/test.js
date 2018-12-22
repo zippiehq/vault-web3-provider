@@ -42,13 +42,12 @@ vault.init(opts).then((result) => {
          })
       })
       web3.eth.getBalance(accounts[0]).then((balance) => testLog('balance: ' + balance))
+
+      web3.eth.sign("datatosign", accounts[0]).then((data) => testLog('Sign: ' + JSON.stringify(data)))
     })
   })
   
 }, (error) => {
   testLog('encountered error: ')
-  if (error.error === 'launch') {
-    vault.launch(error.launch)
-  }
   testLog(error)
 })
