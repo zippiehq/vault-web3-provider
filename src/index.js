@@ -164,47 +164,102 @@ export function addAccount(derive) {
      })
 }
 
-export function init(vaultModule, vaultSecp256k1Module, options = { network: 'foundation' }) {
+/**
+ * 
+ * @param {function} callback 
+ */
+function getAccounts(callback) {
+  let tempAccountsList = []
+  for (var i = 0; i < accounts.length; i++) {
+    tempAccountsList.push(accounts[i].address)
+  }
+  callback(null, tempAccountsList)
+}
+
+/**
+ * Find the vault derive key for a specified address
+ * @param {String} address address to find derive for
+ * @return {String} derive path
+ */
+function findDerive(address) {
+  let derive = null
+  for (var i = 0; i < accounts.length; i++) {
+    if (accounts[i].address === address) {
+      derive = accounts[i].derive
+      break
+    }
+  }
+  return derive
+}
+
+/**
+ * 
+ * @param {*} txParams 
+ * @param {function} callback 
+ */
+function signTransaction(txParams, callback) {
+  let from = txParams.from
+  let derive = findDerive(from)
+
+  if (derive === null) {
+    callback('no such account')
+    return
+  }
+
+  let tx = new Transaction(txParams)
+  vaultSecp256k1.sign(vault, derive, tx.hash(false).toString('hex')).then(function(result) { 
+    var sig = toEthSig(result)
+    sig.r = Buffer.from(sig.r, 'hex')
+    sig.s = Buffer.from(sig.s, 'hex')
+    if (tx._chainId > 0) {
+      sig.v += tx._chainId * 2 + 8
+    }
+    Object.assign(tx, sig)
+    callback(null, '0x' + tx.serialize().toString('hex'))
+    return
+  })
+  return
+}
+
+/**
+ * 
+ * @param {*} msgParams 
+ * @param {function} callback 
+ */
+function signMessage(msgParams, callback) {
+  let account = msgParams.from
+  let derive = findDerive(account)
+  let message = ethutil.keccak256(msgParams.data)
+
+  vaultSecp256k1.sign(vault, derive, message).then((result) => {
+    callback(null, result)
+  })
+}
+
+/**
+ * Initialise Vault Web3 Provider
+ * @param {Object} vaultModule Initialised instance of Zippie Vault
+ * @param {Object} vaultSecp256k1Module Initialised instance of Zippie Vault Secp256k1
+ * @param {rpcUrl: String, network: String} options 
+ * @return {Object} Zero Client
+ */
+export function init(vaultModule, vaultSecp256k1Module, options = { rpcUrl: null, network: 'foundation' }) {
   vault = vaultModule
   vaultSecp256k1 = vaultSecp256k1Module
 
+  if(options.rpcUrl === null || options.rpcUrl === undefined) {
+    options.rpcUrl = 'wss://' + options.network + '.query.zippie.org/'
+  }
+
+  console.info("WEB3 RPC URL: " + options.rpcUrl)
+
   var zero = ZippieClientProvider({
-      rpcUrl: 'wss://' + options.network + '.query.zippie.org/',
-      getAccounts: function(cb) {
-        let tempAccountsList = []
-        for (var i = 0; i < accounts.length; i++) {
-          tempAccountsList.push(accounts[i].address)
-        }
-        cb(null, tempAccountsList)
-        return
-      },
-      signTransaction: function(txParams, cb) {
-        let from = txParams.from
-        let derive = null
-        for (var i = 0; i < accounts.length; i++) {
-          if (accounts[i].address === from) {
-            derive = accounts[i].derive
-            break
-          }
-        }
-        if (derive === null) {
-          cb('no such account')
-          return
-        }
-        let tx = new Transaction(txParams)
-        vaultSecp256k1.sign(vault, derive, tx.hash(false).toString('hex')).then(function(result) { 
-          var sig = toEthSig(result)
-          sig.r = Buffer.from(sig.r, 'hex')
-          sig.s = Buffer.from(sig.s, 'hex')
-          if (tx._chainId > 0) {
-            sig.v += tx._chainId * 2 + 8
-          }
-          Object.assign(tx, sig)
-          cb(null, '0x' + tx.serialize().toString('hex'))
-          return
-        })
-        return
-      }  
+      rpcUrl: options.rpcUrl,
+      getAccounts: getAccounts,
+      signTransaction: signTransaction,
+      signMessage: signMessage
   })
   return zero
 }
+
+export default {init, addAccount}
