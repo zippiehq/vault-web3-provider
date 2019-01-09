@@ -80,6 +80,10 @@ function ZippieClientProvider(opts = {}){
   dataSubprovider.on('data', (err, notification) => {
     engine.emit('data', err, notification)
   })
+  // also forward websocket close event through provider
+  dataSubprovider._socket.addEventListener('close', evt => {
+    engine.emit('wsClosed', evt)
+  })
   engine.addProvider(dataSubprovider)
 
   // start polling
