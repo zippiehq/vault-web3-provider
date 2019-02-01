@@ -154,7 +154,7 @@ function ethAddress(derive) {
     function (resolve, reject) {
       vaultSecp256k1.keyInfo(vault, derive).then(function(result) {
         resolve(ethutil.bufferToHex(ethutil.pubToAddress("0x" + result.pubkey.slice(2))))
-      })
+      }).catch(reject)
     })
 }
 
@@ -164,7 +164,7 @@ export function addAccount(derive) {
        ethAddress(derive).then((result) => {
          accounts.push({'derive': derive, 'address' : result})
          resolve(result)
-       })
+       }).catch(reject)
      })
 }
 
