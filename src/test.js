@@ -1,13 +1,9 @@
 import { div, span, br } from 'callbag-html'
-import * as vault from '@zippie/vault-api'
-import * as vaultSecp256k1 from '@zippie/vault-api/src/secp256k1.js'
+import Vault from '@zippie/vault-api'
 import * as zippieprovider from './index.js'
-import * as Web3 from 'web3'
+import Web3 from 'web3'
 
-var opts = {vaultURL: 'https://vault.dev.zippie.org'}
-
-function testLog(message)
-{
+function testLog(message) {
   console.log(message)
   document.body.appendChild(
     div([span(message),
@@ -16,36 +12,41 @@ function testLog(message)
   )
 }
 
+const vault = new Vault()
+
 testLog('--- Zippie Vault Web3 Tests ---')
 testLog('check web console for detailed information')
 
 testLog('--- Initialise the Vault ---')
-vault.init(opts).then((result) => {
-  testLog('got inited:')
-  testLog(result)
+vault.setup().then(async (result) => {
+  await vault.signin(null, true)
 
   testLog('--- Initialise Web3 Provider ---')
-  var provider = zippieprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
+  const provider = zippieprovider.init(vault, { network: 'foundation' })
 
   testLog('--- Add an Account ---')
-  zippieprovider.addAccount('m/0').then((addy) => {
-    testLog('address: ' + addy)
-    var web3 = new Web3(provider)
-    web3.eth.getAccounts().then((accounts) => {
-          testLog('accounts:' + JSON.stringify(accounts))
+  const account = await zippieprovider.addAccount('m/0')
+  testLog('address: ' + account)
+  
+  const web3 = new Web3(provider)
+  const accounts = await web3.eth.getAccounts()
+  testLog('accounts:' + JSON.stringify(accounts))
 
-          testLog('--- Get Ethereum Chain Info ---')
-          web3.eth.getBlockNumber().then((bnl) => {
-          testLog('block number: ' + bnl)
-          web3.eth.getBlock(bnl).then((blockinfo) => {
-          testLog('block info: ' + JSON.stringify(blockinfo))
-         })
-      })
-      web3.eth.getBalance(accounts[0]).then((balance) => testLog('balance: ' + balance))
+  testLog('--- Get Ethereum Chain Info ---')
+  const bnl = await web3.eth.getBlockNumber()
+  testLog('block number: ' + bnl)
 
-      web3.eth.sign("datatosign", accounts[0]).then((data) => testLog('Sign: ' + JSON.stringify(data)))
-    })
-  })
+  const blockinfo = await web3.eth.getBlock(bnl)
+  testLog('block info: ' + JSON.stringify(blockinfo))
+
+  const balance = await web3.eth.getBalance(accounts[0])
+  testLog('balance: ' + balance)
+
+  const signature = await web3.eth.sign("datatosign", accounts[0])
+  testLog('Sign: ' + signature)
+
+  const signature2 = await web3.eth.personal.sign("datatosign", accounts[0], '')
+  testLog('Personal Sign:' + signature2)
   
 }, (error) => {
   testLog('encountered error: ')

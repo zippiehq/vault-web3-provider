@@ -27,13 +27,13 @@ npm run test
  - eth.getAccounts()
  - eth.getBalance()
  - eth.signTransaction()
+ - eth.personal.sign()
 
 ## How to Use
 
 ### Imports
 ```javascript
-import * as vault from '@zippie/vault-api'
-import * as vaultSecp256k1 from '@zippie/vault-api/src/secp256k1.js'
+import Vault from '@zippie/vault-api'
 import * as zippieprovider from '@zippie/vault-web3-provider'
 import * as Web3 from 'web3'
 ```
@@ -41,10 +41,13 @@ import * as Web3 from 'web3'
 ### Initialise the Vault
 this will redirect the user on boarding if required
 ```javascript
+const vault = new Vault()
 vault
-  .init()
-  .then((result) => {
+  .setup()
+  .then(_ => {
+    vault.signin().then(_ => {
     console.log('Initialised Vault: ' + result)
+    })
   },
   (error) => {
     console.log('Error initialising vault: ' + error)
@@ -55,7 +58,7 @@ vault
 ### Initialise Web3 Provider
 on the ethereum network of your choice .eg kovan, ropsten, mainnet
 ```javascript
-var ethereum = zippieprovider.init(vault, vaultSecp256k1, { network: 'kovan' })
+var ethereum = zippieprovider.init(vault, { network: 'kovan' })
 ```
 
 ### Add Accounts
