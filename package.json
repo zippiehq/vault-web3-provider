@@ -1,6 +1,6 @@
 {
   "name": "@zippie/vault-web3-provider",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Web3.js provider using Zippie Vault",
   "main": "src/index.js",
   "author": "Zippie Ltd.",
@@ -17,7 +17,7 @@
     "web3-provider-engine": "~14.0.6"
   },
   "devDependencies": {
-    "@zippie/vault-api": "0.0.11",
+    "@zippie/vault-api": "^1.0.20",
     "callbag-html": "^0.1.0",
     "web3": "^1.0.0-beta.36",
     "webpack": "^4.0.1",

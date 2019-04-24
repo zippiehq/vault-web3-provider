@@ -1,5 +1,4 @@
 var vault = null
-var vaultSecp256k1 = null
 var accounts = []
 
 import * as ethutil from 'ethereumjs-util'
@@ -80,10 +79,12 @@ function ZippieClientProvider(opts = {}){
   dataSubprovider.on('data', (err, notification) => {
     engine.emit('data', err, notification)
   })
+
   // also forward websocket close event through provider
   dataSubprovider._socket.addEventListener('close', evt => {
     engine.emit('wsClosed', evt)
   })
+
   engine.addProvider(dataSubprovider)
 
   // start polling
@@ -152,7 +153,7 @@ function fromEcSig(v,r,s) {
 function ethAddress(derive) {
   return new Promise( 
     function (resolve, reject) {
-      vaultSecp256k1.keyInfo(vault, derive).then(function(result) {
+      vault.secp256k1.keyInfo(derive).then(function(result) {
         resolve(ethutil.bufferToHex(ethutil.pubToAddress("0x" + result.pubkey.slice(2))))
       }).catch(reject)
     })
@@ -211,7 +212,7 @@ function signTransaction(txParams, callback) {
   }
 
   let tx = new Transaction(txParams)
-  vaultSecp256k1.sign(vault, derive, tx.hash(false).toString('hex')).then(function(result) { 
+  vault.secp256k1.sign(derive, tx.hash(false).toString('hex')).then(function(result) { 
     var sig = toEthSig(result)
     sig.r = Buffer.from(sig.r, 'hex')
     sig.s = Buffer.from(sig.s, 'hex')
@@ -235,8 +236,9 @@ function signMessage(msgParams, callback) {
   let derive = findDerive(account)
   let message = ethutil.keccak256(msgParams.data)
 
-  vaultSecp256k1.sign(vault, derive, message).then((result) => {
-    callback(null, result)
+  vault.secp256k1.sign(derive, message).then((result) => {
+    var sig = result.signature
+    callback(null, sig)
   })
 }
 
@@ -247,9 +249,8 @@ function signMessage(msgParams, callback) {
  * @param {rpcUrl: String, network: String} options 
  * @return {Object} Zero Client
  */
-export function init(vaultModule, vaultSecp256k1Module, options = { rpcUrl: null, network: 'foundation' }) {
+export function init(vaultModule, options = { rpcUrl: null, network: 'foundation' }) {
   vault = vaultModule
-  vaultSecp256k1 = vaultSecp256k1Module
 
   if(options.rpcUrl === null || options.rpcUrl === undefined) {
     options.rpcUrl = 'wss://' + options.network + '.query.zippie.org/'
@@ -261,7 +262,8 @@ export function init(vaultModule, vaultSecp256k1Module, options = { rpcUrl: null
       rpcUrl: options.rpcUrl,
       getAccounts: getAccounts,
       signTransaction: signTransaction,
-      signMessage: signMessage
+      signMessage: signMessage,
+      signPersonalMessage: signMessage
   })
   return zero
 }
