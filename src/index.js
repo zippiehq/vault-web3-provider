@@ -246,14 +246,18 @@ function signMessage(msgParams, callback) {
  * Initialise Vault Web3 Provider
  * @param {Object} vaultModule Initialised instance of Zippie Vault
  * @param {Object} vaultSecp256k1Module Initialised instance of Zippie Vault Secp256k1
- * @param {rpcUrl: String, network: String} options 
+ * @param {rpcUrl: String, network: String, environment: String} options 
  * @return {Object} Zero Client
  */
-export function init(vaultModule, options = { rpcUrl: null, network: 'foundation' }) {
+export function init(vaultModule, options = { rpcUrl: null, network: 'foundation', environment: null }) {
   vault = vaultModule
 
   if(options.rpcUrl === null || options.rpcUrl === undefined) {
-    options.rpcUrl = 'wss://' + options.network + '.query.zippie.org/'
+    if (environment) {
+      options.rpcUrl = `wss://${options.network}-eth.${environment}.zippie.org/`
+    } else {
+      options.rpcUrl = `wss://${options.network}-eth.zippie.org/`
+    }
   }
 
   console.info("WEB3 RPC URL: " + options.rpcUrl)
